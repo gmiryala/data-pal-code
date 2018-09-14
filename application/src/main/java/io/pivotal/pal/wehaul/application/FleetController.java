@@ -2,7 +2,10 @@ package io.pivotal.pal.wehaul.application;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.pivotal.pal.wehaul.fleet.domain.*;
+import io.pivotal.pal.wehaul.fleet.domain.FleetCommandService;
+import io.pivotal.pal.wehaul.fleet.domain.FleetQueryService;
+import io.pivotal.pal.wehaul.fleet.domain.FleetTruckSnapshot;
+import io.pivotal.pal.wehaul.fleet.domain.Vin;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,10 +40,10 @@ public class FleetController {
 
     @GetMapping
     public ResponseEntity<Collection<TruckDto>> getAllTrucks() {
-        Collection<FleetTruck> fleetTrucks = fleetCommandService.findAll();
+        Collection<FleetTruckSnapshot> fleetTrucks = fleetQueryService.findAll();
 
         List<TruckDto> trucksDto = fleetTrucks.stream()
-                .map(truck -> mapTruckToDto(truck))
+                .map(truck -> mapTruckSnapshotToDto(truck))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(trucksDto);
@@ -74,23 +77,6 @@ public class FleetController {
                 fleetTruckSnapshot.getOdometerReading(),
                 fleetTruckSnapshot.getTruckLength(),
                 fleetTruckSnapshot.getLastInspectionOdometerReading()
-        );
-    }
-
-    private TruckDto mapTruckToDto(FleetTruck fleetTruck) {
-        Integer lastInspectionOdometerReading = null;
-        if (fleetTruck.getInspections().size() > 0) {
-            lastInspectionOdometerReading = fleetTruck.getInspections()
-                    .get(fleetTruck.getInspections().size() - 1)
-                    .getOdometerReading();
-        }
-
-        return new TruckDto(
-                fleetTruck.getVin().getVin(),
-                fleetTruck.getStatus().toString(),
-                fleetTruck.getOdometerReading(),
-                fleetTruck.getTruckLength(),
-                lastInspectionOdometerReading
         );
     }
 

@@ -17,7 +17,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -96,5 +95,4 @@ public class EventPublishingFleetTruckRepositoryTest {
 
         assertThat(fleetTruck).isEqualTo(mockFleetTruckFromDelegate);
     }
-
 }
