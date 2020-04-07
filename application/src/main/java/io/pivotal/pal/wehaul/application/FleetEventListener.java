@@ -1,8 +1,6 @@
 package io.pivotal.pal.wehaul.application;
 
-import io.pivotal.pal.wehaul.fleet.domain.event.FleetTruckPurchased;
-import io.pivotal.pal.wehaul.fleet.domain.event.FleetTruckReturnedFromInspection;
-import io.pivotal.pal.wehaul.fleet.domain.event.FleetTruckSentForInspection;
+import io.pivotal.pal.wehaul.fleet.domain.event.*;
 import io.pivotal.pal.wehaul.rental.domain.RentalService;
 import io.pivotal.pal.wehaul.rental.domain.Vin;
 import org.springframework.context.event.EventListener;
@@ -26,11 +24,21 @@ public class FleetEventListener {
 
     @EventListener
     public void onFleetTruckSentForInspection(FleetTruckSentForInspection event) {
-        // TODO implement me
+        rentalService.preventRenting(Vin.of(event.getVin()));
     }
 
     @EventListener
     public void onFleetTruckReturnedFromInspection(FleetTruckReturnedFromInspection event) {
-        // TODO implement me
+        rentalService.allowRenting(Vin.of(event.getVin()));
+    }
+
+    @EventListener
+    public void onFleetTruckRemovedFromYard(FleetTruckRemovedFromYard event){
+        rentalService.preventRenting(Vin.of(event.getVin()));
+    }
+
+    @EventListener
+    public void onFleetTruckReturnedToYard(FleetTruckReturnedToYard event){
+        rentalService.allowRenting(Vin.of(event.getVin()));
     }
 }
