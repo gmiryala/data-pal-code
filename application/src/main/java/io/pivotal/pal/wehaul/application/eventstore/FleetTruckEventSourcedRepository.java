@@ -55,21 +55,6 @@ public class FleetTruckEventSourcedRepository implements FleetTruckRepository {
         return FleetTruck.fromEvents(fleetTruckEvents);
     }
 
-    @Override
-    public List<FleetTruck> findAll() {
-        Map<String, List<FleetTruckEventStoreEntity>> eventEntitiesByVin =
-                eventStoreRepository.findAll(new Sort(Sort.Direction.ASC, "key.vin", "key.version"))
-                        .stream()
-                        .collect(Collectors.groupingBy(eventEntity -> eventEntity.getKey().getVin()));
-
-        return eventEntitiesByVin.entrySet()
-                .stream()
-                .map(eventEntities -> mapEntitiesToEvents(eventEntities.getValue()))
-                .map(FleetTruck::fromEvents)
-                .sorted(Comparator.comparing(truck -> truck.getVin().getVin()))
-                .collect(Collectors.toList());
-    }
-
     private List<FleetTruckEventStoreEntity> mapEventToEntities(List<FleetTruckEvent> events, Integer versionStart) {
 
         return IntStream.range(0, events.size())

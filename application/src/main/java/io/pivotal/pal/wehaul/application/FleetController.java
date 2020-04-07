@@ -37,10 +37,10 @@ public class FleetController {
 
     @GetMapping
     public ResponseEntity<Collection<TruckDto>> getAllTrucks() {
-        Collection<FleetTruck> fleetTrucks = fleetCommandService.findAll();
+        Collection<FleetTruckSnapshot> fleetTruckSnapshots = fleetQueryService.findAll();
 
-        List<TruckDto> trucksDto = fleetTrucks.stream()
-                .map(truck -> mapTruckToDto(truck))
+        List<TruckDto> trucksDto = fleetTruckSnapshots.stream()
+                .map(truckSnapshot -> mapTruckSnapshotToDto(truckSnapshot))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(trucksDto);
